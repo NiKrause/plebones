@@ -1,0 +1,239 @@
+/* Tip Button */
+.tipButton {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background-color 0.2s;
+}
+
+.tipButton:hover {
+  background: #0056b3;
+}
+
+.tipButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--color-background);
+  border: 1px solid var(--color-text-muted);
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-text-muted);
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--color-text);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+.modalContent {
+  padding: 20px;
+}
+
+/* Success Message */
+.successMessage {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.successIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.successMessage h4 {
+  color: #28a745;
+  margin: 0 0 16px 0;
+}
+
+.transactionHash {
+  background: var(--color-background-secondary);
+  padding: 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  word-break: break-all;
+  font-size: 12px;
+  margin: 8px 0 16px 0;
+  border: 1px solid var(--color-text-muted);
+}
+
+/* Recipient Info */
+.recipientInfo {
+  background: var(--color-background-secondary);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-text-muted);
+}
+
+.recipientInfo p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+/* Amount Section */
+.amountSection {
+  margin: 16px 0;
+}
+
+.amountSection label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.amountSection input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-text-muted);
+  border-radius: 4px;
+  font-size: 14px;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.amountSection input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.amountSection input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.amountHint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Messages */
+.warningMessage {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 16px 0;
+}
+
+.warningMessage p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #856404;
+}
+
+.errorMessage {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 16px 0;
+}
+
+.errorMessage p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #721c24;
+}
+
+/* Modal Actions */
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-text-muted);
+}
+
+.cancelButton {
+  background: var(--color-background-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-text-muted);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancelButton:hover {
+  background: var(--color-text-muted);
+}
+
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sendButton {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.sendButton:hover {
+  background: #0056b3;
+}
+
+.sendButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}

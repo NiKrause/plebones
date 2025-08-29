@@ -8,6 +8,8 @@ import useUnreadReplyCount from '../../hooks/use-unread-reply-count'
 import useUpvote from '../../hooks/use-upvote'
 import useDownvote from '../../hooks/use-downvote'
 import useCommentLabels from '../../hooks/use-comment-labels'
+import {TipButton} from '../send-tip'
+import {TipDisplay} from '../comment-tip'
 
 const FeedPostMedia = ({mediaType, mediaUrl, link}) => {
   if (!mediaType) {
@@ -178,6 +180,8 @@ const FeedPost = ({post, updatedPost, index}) => {
             <Link to={internalLink} className={[styles.button, styles.replyCount].join(' ')}>
               {updatedPost?.replyCount || 0} comments <span className={styles.unreadReplyCount}>{unreadReplyCountText}</span>
             </Link>
+            <TipDisplay comment={post} subplebbit={subplebbit} />
+            <TipButton comment={post} subplebbit={subplebbit} />
           </div>
         </div>
       </div>

@@ -19,6 +19,7 @@ import Inbox from './views/inbox'
 import Author from './views/author'
 import Subplebbits from './views/subplebbits'
 import SubplebbitSettings from './views/subplebbit-settings'
+import Wallet from './views/wallet'
 import {useAccount} from '@plebbit/plebbit-react-hooks'
 import styles from './app.module.css'
 import useTheme from './hooks/use-theme'
@@ -81,6 +82,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/subplebbits" element={<Subplebbits />} />
           <Route path="/about" element={<About />} />
+          <Route path="/wallet" element={<Wallet />} />
 
           {/* author post history page */}
           <Route path="/u/:authorAddress/c/:commentCid?" element={<Author />} />

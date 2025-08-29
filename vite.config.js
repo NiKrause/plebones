@@ -2,6 +2,7 @@ import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 import {nodePolyfills} from 'vite-plugin-node-polyfills'
 import {VitePWA} from 'vite-plugin-pwa'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -61,6 +62,13 @@ export default defineConfig({
 
   // electron uses file:// urls, so need base ./
   base: './',
+
+  resolve: {
+    alias: {
+      // Force ethers to use v6 for all imports
+      'ethers': path.resolve(__dirname, 'node_modules/ethers')
+    }
+  },
 
   build: {
     // usually vite uses 'dist', but we want to use 'dist' for electron

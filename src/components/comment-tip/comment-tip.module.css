@@ -1,0 +1,50 @@
+.tipDisplay {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.tipIcon {
+  font-size: 12px;
+}
+
+.tipAmount {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.loading {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.error {
+  color: #dc3545;
+  font-style: italic;
+}
+
+.refreshButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 0;
+  margin-left: 2px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.refreshButton:hover {
+  opacity: 1;
+}
+
+.refreshButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
