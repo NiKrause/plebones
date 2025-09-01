@@ -16,6 +16,8 @@ import useCommentLabels from '../../hooks/use-comment-labels'
 import useStateString from '../../hooks/use-state-string'
 import ReplyMedia from './reply-media'
 import Embed, {canEmbed} from '../../components/embed'
+import TipButton from '../../components/send-tip/tip-button'
+import TipDisplay from '../../components/comment-tip/tip-display'
 
 const AuthorAvatar = ({comment}) => {
   const {imageUrl} = useAuthorAvatar({author: comment?.author})
@@ -123,6 +125,8 @@ const Reply = ({reply, updatedReply, depth, isLast}) => {
                 <span>{publishingStateString}</span>
               </>
             )}
+            <TipDisplay comment={reply} subplebbit={reply} />
+            <TipButton comment={reply} subplebbit={reply} />
             {hasMore && bufferedReplies?.length !== 0 && (
               // must be at the end because position: absolute
               <span onClick={_loadMore} className={styles.newRepliesButton}>
@@ -322,6 +326,8 @@ function Post() {
             <PostReplyTools reply={post}>
               <span className={styles.button}>reply</span>
             </PostReplyTools>
+            <TipDisplay comment={post} subplebbit={post} />
+            <TipButton comment={post} subplebbit={post} />
           </div>
           {post?.content?.trim?.() && <div className={styles.content}>{post?.content?.trim?.()}</div>}
         </div>
