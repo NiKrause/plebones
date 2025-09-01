@@ -1,3 +1,6 @@
+// Import ethers polyfill first to fix computePublicKey compatibility
+import './utils/ethers-polyfill'
+
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'

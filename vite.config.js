@@ -65,7 +65,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      // Force ethers to use v5 for all imports (downgraded from v6 to fix computePublicKey error)
+      // Force ethers to use the installed version
       'ethers': path.resolve(__dirname, 'node_modules/ethers')
     }
   },
