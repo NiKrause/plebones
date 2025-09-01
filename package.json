@@ -34,7 +34,6 @@
     "@floating-ui/react": "0.24.8",
     "@plebbit/plebbit-logger": "https://github.com/plebbit/plebbit-logger.git",
     "@plebbit/plebbit-react-hooks": "https://github.com/plebbit/plebbit-react-hooks.git#33c689e105ef8fdfe31621305ef8d35907a4e8f6",
-    "@plebbit/tipping-v1": "../plebbit-tipping-v1/js-api/plebbit-tipping-v1-1.0.0.tgz",
     "electron-context-menu": "3.3.0",
     "electron-is-dev": "2.0.0",
     "ethers": "^6.14.0",
