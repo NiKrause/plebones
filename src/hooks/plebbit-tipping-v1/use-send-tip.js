@@ -167,7 +167,7 @@ const useSendTip = ({comment, subplebbit}) => {
             setError(new Error('Please enter a valid tip amount greater than 0'))
             return
           }
-          // Convert ETH to wei using ethers
+          // Convert ETH to wei using ethers v6
           customAmount = ethers.parseEther(amountInEth.toString())
           console.log('Parsed custom tip amount:', ethers.formatEther(customAmount), 'ETH')
           // Store the custom amount for display
