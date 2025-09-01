@@ -1,6 +1,7 @@
-import {useState, useCallback, useMemo} from 'react'
+import {useState, useCallback, useMemo, useEffect} from 'react'
 import {PlebbitTippingV1} from 'plebbit-tipping-v1'
 import {useAccount} from '@plebbit/plebbit-react-hooks'
+import {ethers} from 'ethers'
 
 // Convert base64 private key to hex format for ethers
 const convertPrivateKeyToHex = (base64PrivateKey) => {
@@ -39,6 +40,12 @@ const useSendTip = ({comment, subplebbit}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [tip, setTip] = useState(null) // Will store the last tip transaction result
+  const [transactionHash, setTransactionHash] = useState(null) // Transaction hash available immediately
+  const [transactionStatus, setTransactionStatus] = useState('idle') // 'idle', 'sending', 'pending', 'confirmed', 'failed'
+  const [currentBlock, setCurrentBlock] = useState(null)
+  const [confirmations, setConfirmations] = useState(0)
+  const [currentTipAmount, setCurrentTipAmount] = useState(null) // Track the current tip amount being sent
+  const [minimumTipAmount, setMinimumTipAmount] = useState(null) // Track the contract's minimum tip amount
   const account = useAccount()
 
   // Get the recipient wallet address from comment.author.wallets
@@ -74,9 +81,111 @@ const useSendTip = ({comment, subplebbit}) => {
 
     return !!(comment?.cid && recipientWallet && account?.author?.wallets?.eth?.address)
   }, [comment, recipientWallet, account])
+  // Function to get current block number
+  const getCurrentBlock = useCallback(async () => {
+    try {
+      const tippingInstance = await initializeTippingInstance()
+      // Access the provider from the tipping instance
+      if (tippingInstance.provider) {
+        const blockNumber = await tippingInstance.provider.getBlockNumber()
+        setCurrentBlock(blockNumber)
+        return blockNumber
+      }
+    } catch (error) {
+      console.error('Failed to get current block:', error)
+    }
+    return null
+  }, [])
+
+  // Function to get the minimum tip amount using the js-api method
+  const getMinimumTipAmount = useCallback(async () => {
+    try {
+      const tippingInstance = await initializeTippingInstance()
+      const minTipAmount = await tippingInstance.getMinimumTipAmount()
+      setMinimumTipAmount(minTipAmount)
+      return minTipAmount
+    } catch (error) {
+      console.error('Failed to get minimum tip amount:', error)
+    }
+    return null
+  }, [])
+
+  // Function to get the default tip amount (minimum) using js-api method
+  const getDefaultTipAmount = useCallback(async () => {
+    try {
+      const tippingInstance = await initializeTippingInstance()
+      const minTipAmount = await tippingInstance.getMinimumTipAmount()
+      // Use minimum amount as default (no multiplication)
+      const defaultAmount = minTipAmount
+      // Also store the minimum amount for display
+      setMinimumTipAmount(minTipAmount)
+      return defaultAmount
+    } catch (error) {
+      console.error('Failed to get default tip amount:', error)
+    }
+    return null
+  }, [])
+
+  // Function to monitor transaction confirmations
+  const monitorTransaction = useCallback(async (hash) => {
+    if (!hash) return
+
+    try {
+      const tippingInstance = await initializeTippingInstance()
+      if (tippingInstance.provider) {
+        // Get transaction receipt to check if it's confirmed
+        const receipt = await tippingInstance.provider.getTransactionReceipt(hash)
+
+        if (receipt) {
+          setTransactionStatus('confirmed')
+          const currentBlock = await tippingInstance.provider.getBlockNumber()
+          const confirmationCount = currentBlock - receipt.blockNumber + 1
+          setConfirmations(confirmationCount)
+          setCurrentBlock(currentBlock)
+        } else {
+          // Transaction is still pending
+          const currentBlock = await tippingInstance.provider.getBlockNumber()
+          setCurrentBlock(currentBlock)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to monitor transaction:', error)
+    }
+  }, [])
+
   // Function to send a tip
   const sendTip = useCallback(
     async (tipAmount = null) => {
+      console.log('sendTip called with tipAmount:', tipAmount, 'type:', typeof tipAmount)
+
+      // Parse and validate custom tip amount
+      let customAmount = null
+      if (tipAmount && tipAmount.trim() !== '') {
+        try {
+          const amountInEth = parseFloat(tipAmount)
+          if (isNaN(amountInEth) || amountInEth <= 0) {
+            setError(new Error('Please enter a valid tip amount greater than 0'))
+            return
+          }
+          // Convert ETH to wei using ethers
+          customAmount = ethers.parseEther(amountInEth.toString())
+          console.log('Parsed custom tip amount:', ethers.formatEther(customAmount), 'ETH')
+          // Store the custom amount for display
+          setCurrentTipAmount(customAmount)
+        } catch (parseError) {
+          setError(new Error('Invalid tip amount format'))
+          return
+        }
+      } else {
+        // If no custom amount, get and store the default amount
+        try {
+          const defaultAmount = await getDefaultTipAmount()
+          setCurrentTipAmount(defaultAmount)
+        } catch (error) {
+          console.error('Failed to get default tip amount:', error)
+          setCurrentTipAmount(null)
+        }
+      }
       if (!canTip) {
         const errorMsg = !comment?.cid
           ? 'Comment CID is required'
@@ -99,6 +208,12 @@ const useSendTip = ({comment, subplebbit}) => {
 
       setIsLoading(true)
       setError(null)
+      setTransactionStatus('sending')
+      setTransactionHash(null)
+      setConfirmations(0)
+
+      // Get initial block number
+      await getCurrentBlock()
 
       try {
         const tippingInstance = await initializeTippingInstance()
@@ -110,9 +225,11 @@ const useSendTip = ({comment, subplebbit}) => {
           senderCommentCid: undefined, // Could be added later if needed
           sender: account.author.wallets.eth.address,
           privateKey: hexPrivateKey,
+          tipAmount: customAmount, // Pass the custom tip amount (null for default)
         })
 
         console.log('Tip transaction created, sending...')
+        setTransactionStatus('sending')
 
         // Send the transaction
         const result = await tipTransaction.send()
@@ -120,6 +237,12 @@ const useSendTip = ({comment, subplebbit}) => {
         if (result.error) {
           throw result.error
         }
+
+        // Set transaction hash immediately when available
+        console.log('Tip sent successfully:', result.transactionHash)
+        setTransactionHash(result.transactionHash)
+        setTransactionStatus('pending')
+        setIsLoading(false) // Transaction is sent, no longer loading
 
         setTip({
           transactionHash: result.transactionHash,
@@ -129,16 +252,44 @@ const useSendTip = ({comment, subplebbit}) => {
           timestamp: Date.now(),
         })
 
-        console.log('Tip sent successfully:', result.transactionHash)
+        // Start monitoring the transaction
+        monitorTransaction(result.transactionHash)
       } catch (error) {
         console.error('Failed to send tip:', error)
         setError(error)
+        setTransactionStatus('failed')
       } finally {
         setIsLoading(false)
       }
     },
-    [canTip, comment, recipientWallet, account, feeRecipients]
+    [canTip, comment, recipientWallet, account, feeRecipients, getCurrentBlock, monitorTransaction, getDefaultTipAmount]
   )
+
+  // Effect to periodically check transaction status and current block
+  useEffect(() => {
+    let intervalId
+
+    if (transactionHash && transactionStatus === 'pending') {
+      // Poll every 5 seconds while transaction is pending
+      intervalId = setInterval(() => {
+        monitorTransaction(transactionHash)
+      }, 5000)
+
+      // Initial check
+      monitorTransaction(transactionHash)
+    } else if (transactionStatus === 'confirmed' && currentBlock) {
+      // Poll every 15 seconds to update current block for confirmed transactions
+      intervalId = setInterval(() => {
+        getCurrentBlock()
+      }, 15000)
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [transactionHash, transactionStatus, monitorTransaction, getCurrentBlock, currentBlock])
 
   return {
     sendTip,
@@ -148,6 +299,14 @@ const useSendTip = ({comment, subplebbit}) => {
     canTip,
     recipientWallet,
     feeRecipients,
+    transactionHash,
+    transactionStatus,
+    currentBlock,
+    confirmations,
+    getCurrentBlock,
+    currentTipAmount,
+    minimumTipAmount,
+    getMinimumTipAmount,
   }
 }
 

@@ -1,5 +1,6 @@
 import {useState, useEffect, useCallback} from 'react'
 import {useAccount} from '@plebbit/plebbit-react-hooks'
+import TippingActivity from '../../components/tipping-activity/tipping-activity'
 import styles from './wallet.module.css'
 
 const Wallet = () => {
@@ -118,8 +119,15 @@ const Wallet = () => {
   return (
     <div className={styles.wallet}>
       <div className={styles.header}>
-        <h1>Wallet</h1>
-        <p>Manage your Ethereum wallet for tipping</p>
+        <h1>Plebbit Wallet</h1>
+        <p>Manage your tipping</p>
+        <div className={styles.securityReminder}>
+          <span className={styles.warningIcon}>⚠️</span>
+          <span>Remember to backup your private key from the browser - it's stored locally and can be lost if you clear browser data</span>
+          <a href="#/settings" className={styles.settingsLink}>
+            Go to Settings
+          </a>
+        </div>
       </div>
 
       {!hasWallet ? (
@@ -147,56 +155,47 @@ const Wallet = () => {
             <div className={styles.addressSection}>
               <label>Address:</label>
               <div className={styles.addressDisplay}>
-                <span className={styles.address}>{formatAddress(walletAddress)}</span>
-                <button className={styles.copyButton} onClick={handleCopyAddress} title="Copy full address">
+                <span className={styles.fullAddress}>{walletAddress}</span>
+                <button className={styles.copyButton} onClick={handleCopyAddress} title="Copy address">
                   📋
                 </button>
               </div>
-              <div className={styles.fullAddress}>{walletAddress}</div>
             </div>
 
-            <div className={styles.balanceSection}>
-              <label>Balance:</label>
-              <div className={styles.balanceDisplay}>
-                {isLoadingBalance ? (
-                  <span className={styles.loading}>Loading...</span>
-                ) : balanceError ? (
-                  <span className={styles.error}>Error: {balanceError}</span>
-                ) : (
-                  <span className={styles.balance}>{formatBalance(balance)}</span>
-                )}
-                <button className={styles.refreshButton} onClick={handleRefreshBalance} disabled={isLoadingBalance} title="Refresh balance">
-                  🔄
-                </button>
+            <div className={styles.balanceAndFaucetSection}>
+              <div className={styles.balanceSection}>
+                <label>Balance:</label>
+                <div className={styles.balanceDisplay}>
+                  {isLoadingBalance ? (
+                    <span className={styles.loading}>Loading...</span>
+                  ) : balanceError ? (
+                    <span className={styles.error}>Error: {balanceError}</span>
+                  ) : (
+                    <span className={styles.balance}>{formatBalance(balance)}</span>
+                  )}
+                  <button className={styles.refreshButton} onClick={handleRefreshBalance} disabled={isLoadingBalance} title="Refresh balance">
+                    🔄
+                  </button>
+                </div>
+                {lastUpdated && <div className={styles.lastUpdated}>Last updated: {formatLastUpdated(lastUpdated)}</div>}
               </div>
-              {lastUpdated && <div className={styles.lastUpdated}>Last updated: {formatLastUpdated(lastUpdated)}</div>}
-            </div>
 
-            <div className={styles.actions}>
-              <h3>Need testnet ETH?</h3>
-              <p>Use these Sepolia faucets to get test ETH:</p>
-              <div className={styles.faucetLinks}>
-                <a href="https://sepoliafaucet.com/" target="_blank" rel="noopener noreferrer" className={styles.faucetLink}>
-                  Sepolia Faucet 1
-                </a>
-                <a href="https://www.alchemy.com/faucets/ethereum-sepolia" target="_blank" rel="noopener noreferrer" className={styles.faucetLink}>
-                  Alchemy Faucet
-                </a>
-                <a href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" target="_blank" rel="noopener noreferrer" className={styles.faucetLink}>
-                  Google Faucet
-                </a>
+              <div className={styles.faucetSection}>
+                <span className={styles.faucetLabel}>Need testnet ETH?</span>
+                <div className={styles.faucetLinks}>
+                  <a href="https://www.alchemy.com/faucets/ethereum-sepolia" target="_blank" rel="noopener noreferrer" className={styles.faucetLink}>
+                    Alchemy Faucet
+                  </a>
+                  <a href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" target="_blank" rel="noopener noreferrer" className={styles.faucetLink}>
+                    Google Faucet
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
           <div className={styles.tipsSection}>
-            <h2>Tipping Activity</h2>
-            <p>
-              Your tipping activity will be tracked on the blockchain. You can view all transactions using a block explorer like{' '}
-              <a href={`https://sepolia.etherscan.io/address/${walletAddress}`} target="_blank" rel="noopener noreferrer">
-                Sepolia Etherscan
-              </a>
-            </p>
+            <TippingActivity walletAddress={walletAddress} />
           </div>
         </div>
       )}
