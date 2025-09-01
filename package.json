@@ -45,7 +45,7 @@
     "json-stringify-pretty-compact": "4.0.0",
     "memoizee": "0.4.15",
     "mock-require": "3.0.3",
-    "plebbit-tipping-v1": "https://github.com/plebbit/plebbit-tipping-v1.git#acfa5dc03f1df8943118c0c139ee57b4e18f6c84",
+    "plebbit-tipping-v1": "https://github.com/plebbit/plebbit-tipping-v1.git",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "13.2.0",

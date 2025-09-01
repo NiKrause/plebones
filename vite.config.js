@@ -65,7 +65,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      // Force ethers to use v6 for all imports
+      // Force ethers to use v5 for all imports (downgraded from v6 to fix computePublicKey error)
       'ethers': path.resolve(__dirname, 'node_modules/ethers')
     }
   },
@@ -76,6 +76,17 @@ export default defineConfig({
 
     // don't include sourcemap in the electron app or ipfs build
     sourcemap: process.env.GENERATE_SOURCEMAP === 'true' ? true : undefined,
+
+    // suppress rollup warnings about pure annotations
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress pure annotation warnings from ox package
+        if (warning.code === 'PURE_ANNOTATION' || warning.message?.includes('PURE')) {
+          return
+        }
+        warn(warning)
+      }
+    },
 
     // try to support as old browsers as possible
     target: [

@@ -15008,7 +15008,7 @@ please-upgrade-node@^3.2.0:
   dependencies:
     semver-compare "^1.0.0"
 
-"plebbit-tipping-v1@https://github.com/plebbit/plebbit-tipping-v1.git#acfa5dc03f1df8943118c0c139ee57b4e18f6c84":
+"plebbit-tipping-v1@https://github.com/plebbit/plebbit-tipping-v1.git":
   version "1.0.0"
   resolved "https://github.com/plebbit/plebbit-tipping-v1.git#acfa5dc03f1df8943118c0c139ee57b4e18f6c84"
 
