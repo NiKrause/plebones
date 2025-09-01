@@ -14245,7 +14245,7 @@ please-upgrade-node@^3.2.0:
 
 "plebbit-tipping-v1@https://github.com/plebbit/plebbit-tipping-v1.git":
   version "1.0.0"
-  resolved "https://github.com/plebbit/plebbit-tipping-v1.git#acfa5dc03f1df8943118c0c139ee57b4e18f6c84"
+  resolved "https://github.com/plebbit/plebbit-tipping-v1.git#43267a5b970c40b4b2e493ab357144dd69983f95"
 
 plist@3.1.0, plist@^3.0.2, plist@^3.0.4, plist@^3.0.5, plist@^3.0.6, plist@^3.1.0:
   version "3.1.0"
